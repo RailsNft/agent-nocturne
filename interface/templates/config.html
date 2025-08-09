@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Agent IA Nocturne</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+        }
+        
+        .config-section {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .config-section.success {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .config-section.warning {
+            border-left-color: var(--accent-color);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        
+        .help-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .test-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-robot me-2"></i>
+                Agent IA Nocturne
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-tachometer-alt me-1"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/config">
+                            <i class="fas fa-cog me-1"></i>
+                            Configuration
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/stats">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Statistiques
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-cog me-2"></i>
+                    Configuration de l'Agent
+                </h2>
+            </div>
+        </div>
+
+        <form id="configForm">
+            <!-- Clés API -->
+            <div class="config-section">
+                <h4 class="mb-3">
+                    <i class="fas fa-key me-2"></i>
+                    Clés API
+                </h4>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="openai_api_key" class="form-label">Clé API OpenAI *</label>
+                        <input type="password" class="form-control" id="openai_api_key" name="openai_api_key" 
+                               value="{{ config.openai_api_key or '' }}" required>
+                        <div class="help-text">
+                            Obtenez votre clé sur <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="mistral_api_key" class="form-label">Clé API Mistral (optionnel)</label>
+                        <input type="password" class="form-control" id="mistral_api_key" name="mistral_api_key" 
+                               value="{{ config.mistral_api_key or '' }}">
+                        <div class="help-text">
+                            Obtenez votre clé sur <a href="https://console.mistral.ai" target="_blank">console.mistral.ai</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Email -->
+            <div class="config-section">
+                <h4 class="mb-3">
+                    <i class="fas fa-envelope me-2"></i>
+                    Configuration Email
+                </h4>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="email_username" class="form-label">Adresse Gmail *</label>
+                        <input type="email" class="form-control" id="email_username" name="email_username" 
+                               value="{{ config.email.username or '' }}" required>
+                        <div class="help-text">
+                            Votre adresse Gmail pour surveiller les emails
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="email_password" class="form-label">Mot de passe d'application *</label>
+                        <input type="password" class="form-control" id="email_password" name="email_password" 
+                               value="{{ config.email.password or '' }}" required>
+                        <div class="help-text">
+                            <a href="https://myaccount.google.com/apppasswords" target="_blank">Créer un mot de passe d'application</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="email_reply_to" class="form-label">Adresse de réponse</label>
+                        <input type="email" class="form-control" id="email_reply_to" name="email_reply_to" 
+                               value="{{ config.email.reply_to or '' }}">
+                        <div class="help-text">
+                            Email où recevoir les réponses (optionnel)
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-primary test-button" onclick="testEmail()">
+                    <i class="fas fa-test-tube me-1"></i>
+                    Tester la configuration email
+                </button>
+            </div>
+
+            <!-- Critères de sélection -->
+            <div class="config-section">
+                <h4 class="mb-3">
+                    <i class="fas fa-target me-2"></i>
+                    Critères de Sélection
+                </h4>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label for="budget_minimum" class="form-label">Budget minimum (€)</label>
+                        <input type="number" class="form-control" id="budget_minimum" name="budget_minimum" 
+                               value="{{ config.criteria.budget_minimum or 500 }}" min="0">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="duration_max" class="form-label">Durée max (jours)</label>
+                        <input type="number" class="form-control" id="duration_max" name="duration_max" 
+                               value="{{ config.criteria.duration_max or 30 }}" min="1">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="language" class="form-label">Langue</label>
+                        <select class="form-select" id="language" name="language">
+                            <option value="français" {% if config.criteria.language == 'français' %}selected{% endif %}>Français</option>
+                            <option value="anglais" {% if config.criteria.language == 'anglais' %}selected{% endif %}>Anglais</option>
+                            <option value="toutes" {% if config.criteria.language == 'toutes' %}selected{% endif %}>Toutes</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="work_mode" class="form-label">Mode de travail</label>
+                        <select class="form-select" id="work_mode" name="work_mode">
+                            <option value="full remote" {% if config.criteria.work_mode == 'full remote' %}selected{% endif %}>Full Remote</option>
+                            <option value="hybride" {% if config.criteria.work_mode == 'hybride' %}selected{% endif %}>Hybride</option>
+                            <option value="sur site" {% if config.criteria.work_mode == 'sur site' %}selected{% endif %}>Sur site</option>
+                            <option value="tous" {% if config.criteria.work_mode == 'tous' %}selected{% endif %}>Tous</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="relevance_threshold" class="form-label">Seuil de pertinence (1-10)</label>
+                        <input type="number" class="form-control" id="relevance_threshold" name="relevance_threshold" 
+                               value="{{ config.criteria.relevance_threshold or 7 }}" min="1" max="10">
+                        <div class="help-text">
+                            Note minimum pour accepter une mission
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="keywords_to_avoid" class="form-label">Mots-clés à éviter</label>
+                        <input type="text" class="form-control" id="keywords_to_avoid" name="keywords_to_avoid" 
+                               value="{{ config.criteria.keywords_to_avoid | join(', ') }}">
+                        <div class="help-text">
+                            Séparés par des virgules (ex: gratuit, exposition, bénévolat)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature -->
+            <div class="config-section">
+                <h4 class="mb-3">
+                    <i class="fas fa-signature me-2"></i>
+                    Signature
+                </h4>
+                <div class="mb-3">
+                    <label for="signature" class="form-label">Signature personnalisée</label>
+                    <textarea class="form-control" id="signature" name="signature" rows="4">{{ config.signature or '' }}</textarea>
+                    <div class="help-text">
+                        Cette signature sera ajoutée à tous les emails envoyés par l'agent
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Telegram -->
+            <div class="config-section">
+                <h4 class="mb-3">
+                    <i class="fab fa-telegram me-2"></i>
+                    Configuration Telegram
+                </h4>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="telegram_enabled" name="telegram_enabled" 
+                           {% if config.telegram.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="telegram_enabled">
+                        Activer les notifications Telegram
+                    </label>
+                </div>
+                <div id="telegramConfig" class="{% if not config.telegram.enabled %}d-none{% endif %}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="telegram_bot_token" class="form-label">Token du bot Telegram</label>
+                            <input type="password" class="form-control" id="telegram_bot_token" name="telegram_bot_token" 
+                                   value="{{ config.telegram.bot_token or '' }}">
+                            <div class="help-text">
+                                <a href="https://t.me/BotFather" target="_blank">Créer un bot avec @BotFather</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="telegram_chat_id" class="form-label">Chat ID</label>
+                            <input type="text" class="form-control" id="telegram_chat_id" name="telegram_chat_id" 
+                                   value="{{ config.telegram.chat_id or '' }}">
+                            <div class="help-text">
+                                <a href="#" onclick="showChatIdHelp()">Comment obtenir le Chat ID</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="daily_report_enabled" name="daily_report_enabled" 
+                                       {% if config.telegram.daily_report.enabled %}checked{% endif %}>
+                                <label class="form-check-label" for="daily_report_enabled">
+                                    Activer le rapport quotidien
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="daily_report_time" class="form-label">Heure du rapport</label>
+                            <input type="time" class="form-control" id="daily_report_time" name="daily_report_time" 
+                                   value="{{ config.telegram.daily_report.time or '07:00' }}">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary test-button" onclick="testTelegram()">
+                        <i class="fas fa-test-tube me-1"></i>
+                        Tester Telegram
+                    </button>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-save me-1"></i>
+                        Sauvegarder la Configuration
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/'">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Retour au Dashboard
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications"></div>
+
+    <!-- Modal d'aide Chat ID -->
+    <div class="modal fade" id="chatIdHelpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Comment obtenir votre Chat ID</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ol>
+                        <li>Créez un bot avec <a href="https://t.me/BotFather" target="_blank">@BotFather</a></li>
+                        <li>Envoyez un message à votre bot</li>
+                        <li>Ouvrez votre navigateur et allez sur :</li>
+                        <li><code>https://api.telegram.org/bot<VOTRE_TOKEN>/getUpdates</code></li>
+                        <li>Cherchez <code>"chat" -> "id"</code> dans la réponse</li>
+                        <li>Copiez le numéro (ex: 123456789)</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Configuration actuelle
+        let currentConfig = {{ config | tojson }};
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+
+        // Configuration des événements
+        function setupEventListeners() {
+            // Toggle Telegram config
+            document.getElementById('telegram_enabled').addEventListener('change', function() {
+                const telegramConfig = document.getElementById('telegramConfig');
+                if (this.checked) {
+                    telegramConfig.classList.remove('d-none');
+                } else {
+                    telegramConfig.classList.add('d-none');
+                }
+            });
+
+            // Soumission du formulaire
+            document.getElementById('configForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveConfiguration();
+            });
+        }
+
+        // Sauvegarder la configuration
+        function saveConfiguration() {
+            const formData = new FormData(document.getElementById('configForm'));
+            const config = {
+                openai_api_key: formData.get('openai_api_key'),
+                mistral_api_key: formData.get('mistral_api_key'),
+                email: {
+                    username: formData.get('email_username'),
+                    password: formData.get('email_password'),
+                    reply_to: formData.get('email_reply_to')
+                },
+                criteria: {
+                    budget_minimum: parseInt(formData.get('budget_minimum')),
+                    duration_max: parseInt(formData.get('duration_max')),
+                    language: formData.get('language'),
+                    work_mode: formData.get('work_mode'),
+                    relevance_threshold: parseInt(formData.get('relevance_threshold')),
+                    keywords_to_avoid: formData.get('keywords_to_avoid').split(',').map(k => k.trim()).filter(k => k)
+                },
+                signature: formData.get('signature'),
+                telegram: {
+                    enabled: formData.get('telegram_enabled') === 'on',
+                    bot_token: formData.get('telegram_bot_token'),
+                    chat_id: formData.get('telegram_chat_id'),
+                    daily_report: {
+                        enabled: formData.get('daily_report_enabled') === 'on',
+                        time: formData.get('daily_report_time'),
+                        timezone: 'Europe/Paris'
+                    }
+                }
+            };
+
+            fetch('/api/config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(config)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Configuration sauvegardée avec succès', 'success');
+                    currentConfig = config;
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showNotification('Erreur lors de la sauvegarde', 'error');
+            });
+        }
+
+        // Tester la configuration email
+        function testEmail() {
+            const config = {
+                email: {
+                    username: document.getElementById('email_username').value,
+                    password: document.getElementById('email_password').value
+                }
+            };
+
+            fetch('/api/email/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(config)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Configuration email valide', 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showNotification('Erreur lors du test email', 'error');
+            });
+        }
+
+        // Tester Telegram
+        function testTelegram() {
+            const config = {
+                telegram: {
+                    enabled: document.getElementById('telegram_enabled').checked,
+                    bot_token: document.getElementById('telegram_bot_token').value,
+                    chat_id: document.getElementById('telegram_chat_id').value
+                }
+            };
+
+            fetch('/api/telegram/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(config)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Test Telegram réussi', 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showNotification('Erreur lors du test Telegram', 'error');
+            });
+        }
+
+        // Afficher l'aide Chat ID
+        function showChatIdHelp() {
+            const modal = new bootstrap.Modal(document.getElementById('chatIdHelpModal'));
+            modal.show();
+        }
+
+        // Afficher une notification
+        function showNotification(message, type = 'info') {
+            const notifications = document.getElementById('notifications');
+            const notification = document.createElement('div');
+            notification.className = `notification alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            notifications.appendChild(notification);
+
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html> 

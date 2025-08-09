@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques - Agent IA Nocturne</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .opportunity-item {
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: var(--card-bg);
+            border-radius: 0 8px 8px 0;
+            transition: transform 0.2s;
+        }
+        
+        .opportunity-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .opportunity-item.success {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .opportunity-item.warning {
+            border-left-color: var(--accent-color);
+        }
+        
+        .filter-section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-robot me-2"></i>
+                Agent IA Nocturne
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-tachometer-alt me-1"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/config">
+                            <i class="fas fa-cog me-1"></i>
+                            Configuration
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/stats">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Statistiques
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu Principal -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Statistiques Détaillées
+                </h2>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="periodFilter" class="form-label">Période</label>
+                    <select class="form-select" id="periodFilter">
+                        <option value="all">Toutes les périodes</option>
+                        <option value="today">Aujourd'hui</option>
+                        <option value="week">Cette semaine</option>
+                        <option value="month">Ce mois</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="decisionFilter" class="form-label">Décision</label>
+                    <select class="form-select" id="decisionFilter">
+                        <option value="all">Toutes les décisions</option>
+                        <option value="retained">Missions retenues</option>
+                        <option value="rejected">Missions rejetées</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="senderFilter" class="form-label">Expéditeur</label>
+                    <select class="form-select" id="senderFilter">
+                        <option value="all">Tous les expéditeurs</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button class="btn btn-primary" onclick="applyFilters()">
+                            <i class="fas fa-filter me-1"></i>
+                            Appliquer les filtres
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques générales -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="stat-number">{{ stats.total_opportunities or 0 }}</div>
+                        <div class="stat-label">Total Opportunités</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="stat-number">{{ "%.1f"|format(stats.pertinence.moyenne or 0) }}</div>
+                        <div class="stat-label">Pertinence Moyenne</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="stat-number">{{ stats.performance.taux_retention or 0 }}%</div>
+                        <div class="stat-label">Taux de Rétention</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="stat-number">{{ stats.performance.taux_reponse or 0 }}%</div>
+                        <div class="stat-label">Taux de Réponse</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            Distribution des Décisions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="decisionsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Distribution de Pertinence
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="pertinenceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Activité Quotidienne
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Top Expéditeurs
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="topSenders">
+                            <!-- Rempli par JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunités récentes -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Opportunités Récentes
+                        </h5>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm" onclick="loadMoreOpportunities()">
+                                <i class="fas fa-plus me-1"></i>
+                                Charger plus
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="opportunitiesList">
+                            <!-- Rempli par JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Variables globales
+        let decisionsChart, pertinenceChart, activityChart;
+        let currentOpportunities = {{ opportunities | tojson }};
+        let currentStats = {{ stats | tojson }};
+        let currentPage = 1;
+        const opportunitiesPerPage = 10;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            loadTopSenders();
+            loadOpportunities();
+            populateFilters();
+        });
+
+        // Initialiser les graphiques
+        function initializeCharts() {
+            // Graphique des décisions
+            const decisionsCtx = document.getElementById('decisionsChart').getContext('2d');
+            decisionsChart = new Chart(decisionsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Graphique de pertinence
+            const pertinenceCtx = document.getElementById('pertinenceChart').getContext('2d');
+            pertinenceChart = new Chart(pertinenceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Nombre d\'opportunités',
+                        data: [],
+                        backgroundColor: '#2563eb',
+                        borderColor: '#1d4ed8',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Graphique d'activité
+            const activityCtx = document.getElementById('activityChart').getContext('2d');
+            activityChart = new Chart(activityCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Emails analysés',
+                        data: [],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            updateCharts();
+        }
+
+        // Mettre à jour les graphiques
+        function updateCharts() {
+            // Graphique des décisions
+            const decisions = currentStats.decisions || {};
+            decisionsChart.data.labels = Object.keys(decisions);
+            decisionsChart.data.datasets[0].data = Object.values(decisions);
+            decisionsChart.update();
+
+            // Graphique de pertinence
+            const pertinence = currentStats.pertinence?.distribution || {};
+            pertinenceChart.data.labels = Object.keys(pertinence).map(k => `${k}/10`);
+            pertinenceChart.data.datasets[0].data = Object.values(pertinence);
+            pertinenceChart.update();
+
+            // Graphique d'activité
+            const dailyActivity = currentStats.daily_activity || {};
+            activityChart.data.labels = Object.keys(dailyActivity);
+            activityChart.data.datasets[0].data = Object.values(dailyActivity);
+            activityChart.update();
+        }
+
+        // Charger les top expéditeurs
+        function loadTopSenders() {
+            const senders = currentStats.senders || {};
+            const container = document.getElementById('topSenders');
+            
+            if (Object.keys(senders).length === 0) {
+                container.innerHTML = '<div class="text-center text-muted">Aucun expéditeur</div>';
+                return;
+            }
+
+            let html = '';
+            Object.entries(senders).forEach(([sender, count], index) => {
+                const cleanSender = sender.replace('"', '').split('<')[0].trim();
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <span class="badge bg-primary me-2">${index + 1}</span>
+                            <span class="text-truncate">${cleanSender}</span>
+                        </div>
+                        <span class="badge bg-secondary">${count}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Charger les opportunités
+        function loadOpportunities() {
+            const container = document.getElementById('opportunitiesList');
+            const startIndex = (currentPage - 1) * opportunitiesPerPage;
+            const endIndex = startIndex + opportunitiesPerPage;
+            const pageOpportunities = currentOpportunities.slice(startIndex, endIndex);
+
+            if (pageOpportunities.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted">Aucune opportunité</div>';
+                return;
+            }
+
+            let html = '';
+            pageOpportunities.forEach(opp => {
+                const timestamp = new Date(opp.timestamp).toLocaleString('fr-FR');
+                const subject = opp.subject.length > 60 ? opp.subject.substring(0, 60) + '...' : opp.subject;
+                const isSuccess = opp.decision && opp.decision.includes('✅');
+                const sender = opp.sender.replace('"', '').split('<')[0].trim();
+                
+                html += `
+                    <div class="opportunity-item ${isSuccess ? 'success' : 'warning'}">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">${subject}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-user me-1"></i>${sender} | 
+                                    <i class="fas fa-clock me-1"></i>${timestamp}
+                                </small>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="mb-1">
+                                    <span class="badge ${isSuccess ? 'bg-success' : 'bg-warning'}">
+                                        ${opp.decision || 'Non défini'}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="badge bg-info">${opp.pertinence}/10</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Charger plus d'opportunités
+        function loadMoreOpportunities() {
+            currentPage++;
+            loadOpportunities();
+        }
+
+        // Remplir les filtres
+        function populateFilters() {
+            const senders = currentStats.senders || {};
+            const senderFilter = document.getElementById('senderFilter');
+            
+            Object.keys(senders).forEach(sender => {
+                const cleanSender = sender.replace('"', '').split('<')[0].trim();
+                const option = document.createElement('option');
+                option.value = cleanSender;
+                option.textContent = cleanSender;
+                senderFilter.appendChild(option);
+            });
+        }
+
+        // Appliquer les filtres
+        function applyFilters() {
+            const period = document.getElementById('periodFilter').value;
+            const decision = document.getElementById('decisionFilter').value;
+            const sender = document.getElementById('senderFilter').value;
+
+            // Ici vous pouvez implémenter la logique de filtrage
+            // Pour l'instant, on recharge simplement les données
+            fetch('/api/stats')
+                .then(response => response.json())
+                .then(data => {
+                    currentStats = data;
+                    updateCharts();
+                    loadTopSenders();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du filtrage:', error);
+                });
+        }
+
+        // Rafraîchir les données
+        function refreshData() {
+            fetch('/api/stats')
+                .then(response => response.json())
+                .then(data => {
+                    currentStats = data;
+                    updateCharts();
+                    loadTopSenders();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du rafraîchissement:', error);
+                });
+
+            fetch('/api/opportunities')
+                .then(response => response.json())
+                .then(data => {
+                    currentOpportunities = data;
+                    currentPage = 1;
+                    loadOpportunities();
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des opportunités:', error);
+                });
+        }
+
+        // Auto-refresh toutes les 30 secondes
+        setInterval(refreshData, 30000);
+    </script>
+</body>
+</html> 

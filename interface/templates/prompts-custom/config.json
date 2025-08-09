@@ -1,0 +1,136 @@
+{
+  "agent_config": {
+    "nom": "Agent IA Nocturne",
+    "version": "1.0.0",
+    "auteur": "MicroWorkerLab",
+    "description": "Bot automatique qui filtre et répond aux opportunités freelance pendant la nuit"
+  },
+  "profil_freelance": {
+    "nom": "David",
+    "specialite": "Développeur Backend Python/IA",
+    "domaine": "développement backend, API, Python, IA, automatisation",
+    "experience": "5+ ans",
+    "site_web": "www.davidfreelance.fr",
+    "email": "david@davidfreelance.fr",
+    "telephone": "+33 6 XX XX XX XX",
+    "localisation": "France (Full Remote)",
+    "langues": ["français", "anglais"]
+  },
+  "criteres_filtrage": {
+    "budget_minimum": 500,
+    "budget_prefere": 1000,
+    "duree_max": 30,
+    "duree_preferee": 15,
+    "langue_requise": "français",
+    "type_mission": ["développement", "API", "backend", "IA", "automatisation"],
+    "technologies_requises": ["Python", "API", "Backend", "IA"],
+    "technologies_eviter": ["WordPress", "Shopify", "Wix"],
+    "mode_travail": "full_remote",
+    "mots_cles_eviter": [
+      "gratuit",
+      "exposition",
+      "urgent sans budget",
+      "bénévolat",
+      "collaboration",
+      "partenariat sans rémunération"
+    ],
+    "mots_cles_prioritaires": [
+      "budget",
+      "rémunération",
+      "tarif",
+      "honoraires",
+      "contrat",
+      "mission"
+    ],
+    "seuil_pertinence": 7
+  },
+  "reponse_automatique": {
+    "ton": "professionnel_et_chaleureux",
+    "langue": "français",
+    "longueur_max": 150,
+    "inclure_signature": true,
+    "inclure_cta": true,
+    "cta_type": "appel_echange",
+    "signature_template": "{{nom}} - {{specialite}}\n{{site_web}}\n{{telephone}}\n{{email}}"
+  },
+  "notifications": {
+    "telegram_actif": true,
+    "notifications_nuit": false,
+    "resume_quotidien": true,
+    "resume_hebdomadaire": true,
+    "heure_resume_quotidien": "20:00",
+    "jour_resume_hebdomadaire": "dimanche",
+    "heure_resume_hebdomadaire": "18:00"
+  },
+  "logging": {
+    "notion_actif": true,
+    "airtable_actif": false,
+    "google_sheets_actif": false,
+    "proprietes_notion": {
+      "titre": "Titre",
+      "statut": "Statut",
+      "pertinence": "Pertinence",
+      "date": "Date",
+      "expediteur": "Expéditeur",
+      "budget": "Budget",
+      "technologies": "Technologies"
+    }
+  },
+  "integrations": {
+    "gmail": {
+      "actif": true,
+      "labels": {
+        "traite": "🤖 Agent IA",
+        "repondu": "✅ Répondu",
+        "rejete": "❌ Rejeté"
+      }
+    },
+    "linkedin": {
+      "actif": false,
+      "auto_repondeur_dm": true,
+      "messages_prospects": false
+    },
+    "calendly": {
+      "actif": false,
+      "inclure_lien_rdv": false
+    }
+  },
+  "optimisation": {
+    "temperature_gpt_filtrage": 0.3,
+    "temperature_gpt_reponse": 0.7,
+    "max_tokens_filtrage": 500,
+    "max_tokens_reponse": 800,
+    "model_gpt": "gpt-4",
+    "fallback_model": "gpt-3.5-turbo"
+  },
+  "securite": {
+    "validation_manuelle": false,
+    "seuil_confiance_minimum": 0.8,
+    "backup_automatique": true,
+    "logs_erreurs": true
+  },
+  "marketing": {
+    "inclure_footer_ia": true,
+    "footer_texte": "💡 Cette réponse a été générée automatiquement par mon Agent IA Nocturne\nDisponible 24h/24 pour traiter vos demandes même pendant mon sommeil !",
+    "branding": "MicroWorkerLab",
+    "hashtags": ["#freelance", "#ia", "#automatisation", "#python", "#api"]
+  },
+  "monetisation": {
+    "prix_early_bird": 9,
+    "prix_standard": 29,
+    "prix_premium": 49,
+    "plateformes_vente": ["Gumroad", "Notion", "Systeme.io"],
+    "upsell_possibles": [
+      "Pack 3 agents (jour/nuit/email/LinkedIn)",
+      "Formation express \"Automatiser sa prospection IA\"",
+      "Support prioritaire",
+      "Personnalisation avancée"
+    ]
+  },
+  "maintenance": {
+    "mise_a_jour_prompts": "mensuelle",
+    "optimisation_performance": "trimestrielle",
+    "nouvelles_fonctionnalites": "trimestrielle",
+    "support_client": "prioritaire"
+  }
+} 

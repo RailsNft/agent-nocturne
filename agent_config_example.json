@@ -1,0 +1,27 @@
+{
+  "openai_api_key": "VOTRE_CLE_API_OPENAI_ICI",
+  "mistral_api_key": "VOTRE_CLE_API_MISTRAL_ICI",
+  "email": {
+    "username": "votre_email@gmail.com",
+    "password": "votre_mot_de_passe_app",
+    "reply_to": "votre_email@gmail.com"
+  },
+  "criteria": {
+    "budget_min": 500,
+    "duration_max": 30,
+    "relevance_threshold": 7,
+    "language": "français",
+    "work_mode": "full remote",
+    "keywords_to_avoid": ["gratuit", "exposition", "urgent sans budget", "bénévolat"]
+  },
+  "signature": "Agent IA Nocturne - Développeur Backend Python/IA",
+  "telegram": {
+    "enabled": false,
+    "bot_token": "VOTRE_TOKEN_BOT_ICI",
+    "chat_id": "VOTRE_CHAT_ID_ICI",
+    "daily_report": {
+      "enabled": false,
+      "time": "07:00"
+    }
+  }
+}

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Agent IA Nocturne - Installateur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .step-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .step-card.active {
+            border: 3px solid #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .progress-bar {
+            height: 10px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .form-control {
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            padding: 12px 20px;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .log-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .status-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .config-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 class="text-white mb-3">
+                        <i class="fas fa-robot"></i> Agent IA Nocturne
+                    </h1>
+                    <p class="text-white-50 lead">Installateur et Configuration Automatique</p>
+                </div>
+
+                <!-- Main Card -->
+                <div class="card">
+                    <div class="card-body p-5">
+                        <!-- Step Indicator -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="step-card card text-center p-3" id="step1">
+                                    <i class="fas fa-check-circle status-icon text-success"></i>
+                                    <h6>Vérification Système</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="step-card card text-center p-3" id="step2">
+                                    <i class="fas fa-cog status-icon text-muted"></i>
+                                    <h6>Installation</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="step-card card text-center p-3" id="step3">
+                                    <i class="fas fa-cogs status-icon text-muted"></i>
+                                    <h6>Configuration</h6>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="step-card card text-center p-3" id="step4">
+                                    <i class="fas fa-rocket status-icon text-muted"></i>
+                                    <h6>Lancement</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="progress mb-4" style="height: 10px;">
+                            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                        </div>
+
+                        <!-- Content Area -->
+                        <div id="contentArea">
+                            <!-- Step 1: System Check -->
+                            <div id="step1Content">
+                                <h4 class="mb-4">
+                                    <i class="fas fa-check-circle text-success"></i> Vérification du Système
+                                </h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="config-section">
+                                            <h6><i class="fas fa-python"></i> Python</h6>
+                                            <div id="pythonStatus">Vérification en cours...</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="config-section">
+                                            <h6><i class="fas fa-desktop"></i> Système d'Exploitation</h6>
+                                            <div id="osStatus">Vérification en cours...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-primary" onclick="checkSystem()">
+                                        <i class="fas fa-sync-alt"></i> Vérifier le Système
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Configuration -->
+                            <div id="step2Content" style="display: none;">
+                                <h4 class="mb-4">
+                                    <i class="fas fa-cog text-primary"></i> Configuration
+                                </h4>
+                                
+                                <!-- API Keys -->
+                                <div class="config-section">
+                                    <h6><i class="fas fa-key"></i> Clés API</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">OpenAI API Key</label>
+                                            <input type="password" class="form-control" id="openaiKey" placeholder="sk-...">
+                                            <small class="text-muted">Obtenez votre clé sur <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Mistral API Key</label>
+                                            <input type="password" class="form-control" id="mistralKey" placeholder="votre-clé-mistral">
+                                            <small class="text-muted">Obtenez votre clé sur <a href="https://console.mistral.ai/api-keys/" target="_blank">console.mistral.ai</a></small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email Configuration -->
+                                <div class="config-section">
+                                    <h6><i class="fas fa-envelope"></i> Configuration Email</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Email Gmail</label>
+                                            <input type="email" class="form-control" id="email" placeholder="votre-email@gmail.com">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Mot de passe d'application</label>
+                                            <input type="password" class="form-control" id="password" placeholder="Mot de passe d'application Gmail">
+                                            <small class="text-muted">Créez un mot de passe d'application dans les paramètres Google</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Criteria -->
+                                <div class="config-section">
+                                    <h6><i class="fas fa-filter"></i> Critères de Sélection</h6>
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Budget minimum (€)</label>
+                                            <input type="number" class="form-control" id="budgetMin" value="500">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Durée max (jours)</label>
+                                            <input type="number" class="form-control" id="durationMax" value="30">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Langue</label>
+                                            <select class="form-control" id="language">
+                                                <option value="français">Français</option>
+                                                <option value="anglais">Anglais</option>
+                                                <option value="toutes">Toutes</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Seuil de pertinence</label>
+                                            <input type="number" class="form-control" id="relevance" value="7" min="1" max="10">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Mots-clés à éviter (séparés par des virgules)</label>
+                                        <input type="text" class="form-control" id="keywordsAvoid" value="gratuit,exposition,urgent sans budget,bénévolat">
+                                    </div>
+                                </div>
+
+                                <!-- Signature -->
+                                <div class="config-section">
+                                    <h6><i class="fas fa-signature"></i> Signature</h6>
+                                    <textarea class="form-control" id="signature" rows="3" placeholder="Votre signature pour les réponses automatiques">Agent IA Nocturne - Développeur Backend Python/IA</textarea>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-primary" onclick="startInstallation()">
+                                        <i class="fas fa-download"></i> Commencer l'Installation
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Installation Progress -->
+                            <div id="step3Content" style="display: none;">
+                                <h4 class="mb-4">
+                                    <i class="fas fa-cogs text-warning"></i> Installation en Cours
+                                </h4>
+                                <div class="text-center mb-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Installation...</span>
+                                    </div>
+                                    <p class="mt-2" id="installMessage">Préparation de l'installation...</p>
+                                </div>
+                                <div class="log-container" id="logContainer">
+                                    <!-- Logs will appear here -->
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Success -->
+                            <div id="step4Content" style="display: none;">
+                                <div class="text-center">
+                                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                                    <h4 class="mt-3 text-success">Installation Terminée !</h4>
+                                    <p class="lead">Votre Agent IA Nocturne est prêt à fonctionner.</p>
+                                    <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h6><i class="fas fa-globe"></i> Interface Web</h6>
+                                                    <p>Accédez à votre dashboard</p>
+                                                    <a href="http://localhost:8080" target="_blank" class="btn btn-primary">
+                                                        <i class="fas fa-external-link-alt"></i> Ouvrir Dashboard
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <h6><i class="fas fa-cog"></i> Contrôle</h6>
+                                                    <p>Gérez votre agent</p>
+                                                    <button class="btn btn-outline-primary" onclick="showControlCommands()">
+                                                        <i class="fas fa-terminal"></i> Commandes de Contrôle
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        let socket = io();
+        let currentStep = 1;
+
+        // WebSocket events
+        socket.on('log', function(data) {
+            addLog(data.message);
+        });
+
+        function addLog(message) {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            logContainer.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function checkSystem() {
+            fetch('/api/check-system')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('pythonStatus').innerHTML = 
+                        data.python_ok ? 
+                        `<span class="text-success"><i class="fas fa-check"></i> ${data.python_msg}</span>` :
+                        `<span class="text-danger"><i class="fas fa-times"></i> ${data.python_msg}</span>`;
+                    
+                    document.getElementById('osStatus').innerHTML = 
+                        `<span class="text-info"><i class="fas fa-desktop"></i> ${data.os}</span>`;
+                    
+                    if (data.python_ok) {
+                        setTimeout(() => showStep(2), 1000);
+                    }
+                });
+        }
+
+        function showStep(step) {
+            // Hide all content
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step${i}Content`).style.display = 'none';
+                document.getElementById(`step${i}`).classList.remove('active');
+            }
+            
+            // Show current step
+            document.getElementById(`step${step}Content`).style.display = 'block';
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = (currentStep - 1) * 25;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function startInstallation() {
+            const config = {
+                openai_key: document.getElementById('openaiKey').value,
+                mistral_key: document.getElementById('mistralKey').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                budget_min: document.getElementById('budgetMin').value,
+                duration_max: document.getElementById('durationMax').value,
+                language: document.getElementById('language').value,
+                relevance: document.getElementById('relevance').value,
+                keywords_avoid: document.getElementById('keywordsAvoid').value,
+                signature: document.getElementById('signature').value
+            };
+
+            showStep(3);
+            
+            fetch('/api/install', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({config: config})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'started') {
+                    monitorInstallation();
+                }
+            });
+        }
+
+        function monitorInstallation() {
+            const interval = setInterval(() => {
+                fetch('/api/status')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('installMessage').textContent = data.message;
+                        document.getElementById('progressBar').style.width = data.progress + '%';
+                        
+                        if (data.error) {
+                            addLog(`❌ Erreur: ${data.error}`);
+                            clearInterval(interval);
+                        } else if (data.step === 'complete') {
+                            addLog('✅ Installation terminée avec succès !');
+                            clearInterval(interval);
+                            setTimeout(() => showStep(4), 2000);
+                        }
+                    });
+            }, 1000);
+        }
+
+        function showControlCommands() {
+            alert(`Commandes de contrôle :
+
+# Démarrer le service
+python3 control_agent.py start
+
+# Arrêter le service  
+python3 control_agent.py stop
+
+# Vérifier le statut
+python3 control_agent.py status
+
+# Voir les logs
+python3 control_agent.py logs`);
+        }
+
+        // Auto-check system on load
+        window.onload = function() {
+            checkSystem();
+        };
+    </script>
+</body>
+</html> 

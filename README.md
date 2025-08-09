@@ -40,8 +40,8 @@ L'interface est accessible sur : **http://localhost:5002**
 ## ⚙️ **Configuration**
 
 ### **1. Email Gmail**
-- Adresse : `prestadevpythonia@gmail.com`
-- Mot de passe d'application : `acsc beyt rjar bpnx`
+- Adresse : `votre_email@gmail.com`
+- Mot de passe d'application : `votre_mot_de_passe_app`
 
 ### **2. Clés API**
 - **OpenAI API Key** : À configurer dans l'interface

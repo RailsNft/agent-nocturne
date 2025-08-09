@@ -1,4 +1,4 @@
-# Agent Nocturne - .gitignore
+# Agent Nocturne - .gitignore (Architecture 2.0)
 
 # Python
 __pycache__/
@@ -27,22 +27,28 @@ venv/
 env/
 ENV/
 
-# Logs
-*.log
+# Logs et cache
 logs/
+cache/
+*.log
 opportunities_log.json
 
 # Configuration locale et sensible
-agent_config.json
-agent_config_local.json
+config/local.json
+config/production.json
 .env
 *.key
 *.pem
 secrets.json
 
-# Cache
-.cache/
+# Données
+data/storage/*.json
+data/storage/*.db
+
+# Tests
 .pytest_cache/
+.coverage
+htmlcov/
 
 # IDE
 .vscode/
@@ -57,3 +63,6 @@ Thumbs.db
 # Fichiers temporaires
 *.tmp
 *.temp
+
+# Backup
+BACKUP_AVANT_MIGRATION/

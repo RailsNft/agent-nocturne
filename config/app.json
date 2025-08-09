@@ -1,0 +1,15 @@
+{
+  "app": {
+    "name": "Agent IA Nocturne",
+    "version": "2.0.0",
+    "port": 5002,
+    "host": "localhost",
+    "debug": false
+  },
+  "paths": {
+    "config": "config/",
+    "logs": "logs/",
+    "cache": "cache/",
+    "data": "data/"
+  }
+}

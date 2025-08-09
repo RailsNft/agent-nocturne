@@ -39,17 +39,22 @@ L'interface est accessible sur : **http://localhost:5002**
 
 ## ⚙️ **Configuration**
 
-### **1. Email Gmail**
-- Adresse : `votre_email@gmail.com`
-- Mot de passe d'application : `votre_mot_de_passe_app`
+### **1. Configuration Automatique (Recommandé)**
+```bash
+# Exécuter le script de configuration
+python3 setup_config.py
+```
+Ce script copie automatiquement vos vraies informations depuis `agent_config_local.json`
 
-### **2. Clés API**
-- **OpenAI API Key** : À configurer dans l'interface
-- **Mistral API Key** : À configurer dans l'interface
+### **2. Configuration Manuelle**
+- **Email Gmail** : Modifiez `agent_config.json`
+- **Clés API** : Ajoutez vos clés OpenAI et Mistral
+- **Telegram** : Configurez bot token et chat ID
 
-### **3. Telegram (Optionnel)**
-- Bot Token : À configurer
-- Chat ID : À configurer
+### **3. Fichiers de Configuration**
+- `agent_config_example.json` : Exemple sans secrets (dans Git)
+- `agent_config_local.json` : Vraies informations (local uniquement)
+- `agent_config.json` : Configuration active (généré automatiquement)
 
 ## 📊 **Fonctionnalités**
 
@@ -88,9 +93,9 @@ AGENT_NOCTURNE/
 
 ## 🎯 **Utilisation**
 
-1. **Lancer l'agent** : `python3 lancer_agent.py`
-2. **Ouvrir l'interface** : http://localhost:5002
-3. **Configurer** vos clés API et email
+1. **Configurer l'agent** : `python3 setup_config.py`
+2. **Lancer l'agent** : `python3 lancer_agent.py`
+3. **Ouvrir l'interface** : http://localhost:5002
 4. **Démarrer** l'agent avec le bouton "Démarrer"
 5. **Surveiller** les opportunités dans le dashboard
 
